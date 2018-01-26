@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "NSArray+Extension.h"
+#import "NSDictionary+Extension.h"
 
 @interface ViewController ()
 
@@ -18,16 +20,28 @@
     [super viewDidLoad];
 
     //创建数组
-    NSArray *array = @[@"abc",@"中文"];
+    NSArray *array = @[@"abc",@"abc",@[@"a",@"bay"]];
     //创建字典
-    NSDictionary *dict = @{@"key1" : @"abc",
-                           @"key2" : @"中文",
+    NSDictionary *dict = @{@"key1" : array,
+                           @"key7" :@[],
+                           @"key8" :[ViewController new],
+                           @"key9" :@{},
+                           @"key2" : @"a",
+                           @"key3" : @"中文",
+                           @"key6" : @"dd",
+                           @"key10" :@{@"key4":@"你好",
+                                      @"key5":@{@"key6":@"哈哈哈"}
+                                      },
+                           @"key4" : @"嘻嘻嘻",
+                           @"key5" : @"哈哈哈",
                            };
     //打印数组和字典
-    NSLog(@" \n dict = %@ \n array = %@",dict,array);
+    NSLog(@"%@",dict);
+    NSLog(@"%@",array);
+
+//    NSLog(@" \n dict = %@ \n array = %@",dict,array);
     
 }
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

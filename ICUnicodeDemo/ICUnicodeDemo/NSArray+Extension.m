@@ -7,26 +7,33 @@
 //
 
 #import "NSArray+Extension.h"
+#import "NSDictionary+Extension.h"
 
 @implementation NSArray (Extension)
 
-
-
--(NSString *)descriptionWithLocale:(id)locale
-{
-    NSMutableString *msr = [NSMutableString string];
-    [msr appendString:@"["];
-    for (id obj in self) {
-        [msr appendFormat:@"\n\t%@,",obj];
+- (NSString *)formatArray:(NSArray *)array formatString:(NSString *)formatString {
+    NSMutableString *string = [NSMutableString string];
+    if (formatString == nil||formatString.length == 0) {
+        formatString = @"\t";
+        [string appendString:@"[\n"];
+    }else {
+        [string appendString:@"\t[\n"];
     }
-    //去掉最后一个逗号（,）
-    if ([msr hasSuffix:@","]) {
-        NSString *str = [msr substringToIndex:msr.length - 1];
-        msr = [NSMutableString stringWithString:str];
+    for (int i = 0; i<array.count; i++) {
+        id value = array[i];
+        NSString *arrayFormatString = [NSString stringWithFormat:@"%@%@",formatString,formatString];
+        if ([value isKindOfClass:[NSDictionary class]]) {
+            [string appendFormat:@"%@%@\n",formatString,[value formatDictionary:value formatString:arrayFormatString]];
+        }else if ([value isKindOfClass:[NSArray class]]) {
+            [string appendFormat:@"%@%@\n",formatString,[self formatArray:value formatString:arrayFormatString]];
+        }else{
+            [string appendFormat:@"%@%@,\n",formatString,value];
+        }
     }
-    [msr appendString:@"\n]"];
-    return msr;
+    [string appendFormat:@"%@]",[formatString substringFromIndex:1]];
+    return string;
 }
-
-
+- (NSString *)description {
+    return [self formatArray:self formatString:nil];
+}
 @end

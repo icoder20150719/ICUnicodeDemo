@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NSDictionary (Extension)
-
+- (NSString *)formatDictionary:(NSDictionary *)dict formatString:(NSString *)formatString;
 @end

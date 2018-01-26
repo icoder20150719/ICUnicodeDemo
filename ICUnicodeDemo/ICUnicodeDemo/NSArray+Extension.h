@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NSArray (Extension)
-
+- (NSString *)formatArray:(NSArray *)array formatString:(NSString *)formatString;
 @end

@@ -7,21 +7,38 @@
 //
 
 #import "NSDictionary+Extension.h"
+#import "NSArray+Extension.h"
 
 @implementation NSDictionary (Extension)
--(NSString *)descriptionWithLocale:(id)locale
-{
-    NSMutableString *msr = [NSMutableString string];
-    [msr appendString:@"{"];
-    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [msr appendFormat:@"\n\t%@ = %@,",key,obj];
-    }];
-    //去掉最后一个逗号（,）
-    if ([msr hasSuffix:@","]) {
-        NSString *str = [msr substringToIndex:msr.length - 1];
-        msr = [NSMutableString stringWithString:str];
+
+- (NSString *)formatDictionary:(NSDictionary *)dict formatString:(NSString *)formatString {
+    if (formatString == nil ||formatString.length == 0) {
+        formatString = @"\t";
     }
-    [msr appendString:@"\n}"];
-    return msr;
+    NSArray *temps = dict.allKeys;
+    NSArray *allKeys = [temps sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        return dict[obj1]>dict[obj2];
+    }];
+    NSMutableString *string = [NSMutableString string];
+    [string appendString:@"{\n"];
+    for(int i = 0;i <allKeys.count;i++){
+        id key = allKeys[i];
+        id value = dict[key];
+        [string appendFormat:@"%@%@ = ",formatString,key];
+        NSString *dictFormatString = [NSString stringWithFormat:@"%@%@",formatString,formatString];
+        if ([value isKindOfClass:[NSDictionary class]]) {
+            [string appendFormat:@"%@%@\n",formatString,[self formatDictionary:value formatString:dictFormatString]];
+        }else if ([value isKindOfClass:[NSArray class]]) {
+            [string appendFormat:@"%@%@\n",formatString,[value formatArray:value formatString:dictFormatString]];
+        }else{
+                [string appendFormat:@"%@\n",value];
+            }
+    }
+    [string appendFormat:@"%@};",[formatString substringFromIndex:1]];
+    return string;
 }
+- (NSString *)description {
+    return [self formatDictionary:self formatString:nil];
+}
+
 @end
